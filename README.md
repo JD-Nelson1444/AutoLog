@@ -15,12 +15,8 @@ A maintenance log for every car you own. Plain HTML, CSS and JavaScript, with no
 
 Everything is saved in the visitor's own browser (localStorage). Nothing is uploaded, and each visitor to the site only ever sees their own records. To move records to another device, download a backup there and restore it here.
 
-## Publish on GitHub Pages
-
-1. Create a repository on GitHub and push these files to the `main` branch.
-2. In the repository, open Settings, then Pages.
-3. Under "Build and deployment", choose "Deploy from a branch", pick `main` and `/ (root)`, and save.
-4. The site appears at `https://<your-username>.github.io/<repository-name>/` after a minute or two.
+## On GitHub Pages
+4. The site appears at `https://jd-nelson1444.github.io/autolog/` after a minute or two.
 
 ## Run it locally
 
