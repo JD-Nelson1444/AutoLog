@@ -16,7 +16,7 @@ A maintenance log for every car you own. Plain HTML, CSS and JavaScript, with no
 Everything is saved in the visitor's own browser (localStorage). Nothing is uploaded, and each visitor to the site only ever sees their own records. To move records to another device, download a backup there and restore it here.
 
 ## On GitHub Pages
-4. The site appears at `https://jd-nelson1444.github.io/autolog/` after a minute or two.
+The site appears at `https://jd-nelson1444.github.io/AutoLog/`.
 
 ## Run it locally
 
