@@ -1,0 +1,14 @@
+// Minimal service worker: lets AutoLog show oil change notifications on
+// phones (which require a service worker) and focuses the app when one is tapped.
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+      if (list.length) return list[0].focus();
+      return self.clients.openWindow('./#reminder');
+    })
+  );
+});

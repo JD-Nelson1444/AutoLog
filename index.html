@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AutoLog: maintenance records for every car you own</title>
+  <meta name="description" content="Log maintenance and repairs for each of your cars, track what you've spent, keep part numbers handy, and get an oil change reminder every 6 months.">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:ital,wght@0,600;0,700;1,700;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="wordmark" href="./" aria-label="AutoLog home">AutoLog</a>
+      <div class="header-tools">
+        <label class="visually-hidden" for="carSelect">Car</label>
+        <select id="carSelect" class="header-select" hidden></select>
+        <button type="button" class="btn btn-on-dark" id="addCarBtn">Add a car</button>
+        <button type="button" class="btn btn-on-dark btn-profile" id="profileBtn" aria-haspopup="dialog">
+          <svg aria-hidden="true" viewBox="0 0 20 20" width="16" height="16"><circle cx="10" cy="6.5" r="3.5" fill="currentColor"/><path d="M3 18c0-4 3.1-6.5 7-6.5s7 2.500 7 6.500z" fill="currentColor"/></svg>
+          <span id="profileName">Profile</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="hero-copy">
+      <h1 id="heroTitle">The service record for every car in your garage.</h1>
+      <p>Write down each job when it's done: what, where, the mileage and the cost. AutoLog keeps the running total, remembers your part numbers and tells you when the next oil change is due.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#log">Log maintenance</a>
+        <a class="btn btn-on-dark" href="#details">Car details</a>
+      </div>
+    </div>
+    <figure class="hero-photo">
+      <img src="assets/mustang-mach1-1969.jpg" width="1920" height="1280"
+           alt="A red 1969 Ford Mustang Mach 1 fastback with a matte black hood and gold side stripe, parked at a car show.">
+    </figure>
+  </section>
+  <div class="mach-stripe" aria-hidden="true"></div>
+
+  <main id="main" class="wrap">
+
+    <!-- Car details -->
+    <section id="details" class="block" aria-labelledby="detailsTitle">
+      <div class="block-head">
+        <h2 id="detailsTitle">Car details</h2>
+        <div class="block-actions" id="detailsActions" hidden>
+          <button type="button" class="btn btn-outline" id="editCarBtn">Edit details</button>
+          <button type="button" class="btn btn-quiet" id="deleteCarBtn">Delete car</button>
+        </div>
+      </div>
+      <div id="carDetails"></div>
+    </section>
+
+    <!-- Oil change reminder -->
+    <section id="reminder" class="block" aria-labelledby="reminderTitle" hidden>
+      <div class="block-head">
+        <h2 id="reminderTitle">Oil change reminder</h2>
+      </div>
+      <div class="reminder">
+        <div class="reminder-status">
+          <p class="reminder-line" id="reminderLine"></p>
+          <div class="gauge" id="reminderGauge" role="img"><span></span></div>
+          <p class="note" id="reminderNote"></p>
+        </div>
+        <div class="reminder-actions">
+          <button type="button" class="btn btn-primary" id="notifyBtn">Turn on notifications</button>
+          <button type="button" class="btn btn-outline" id="calendarBtn">Add to calendar</button>
+          <p class="note">Browser notifications appear when you open AutoLog. To be reminded even when the site is closed, add the repeating 6‑month event to your calendar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Maintenance log -->
+    <section id="log" class="block" aria-labelledby="logTitle" hidden>
+      <div class="block-head">
+        <h2 id="logTitle">Maintenance log</h2>
+        <div class="odometer-wrap">
+          <span class="odometer-label" id="odoLabel">Total spent on this car</span>
+          <div class="odometer" id="odometer" role="img"></div>
+        </div>
+      </div>
+
+      <form id="entryForm" class="entry-form" novalidate>
+        <h3 id="entryFormTitle">Log completed work</h3>
+        <div class="entry-grid">
+          <div class="field f-date">
+            <label for="eDate">Date completed</label>
+            <input type="date" id="eDate" required>
+          </div>
+          <div class="field f-desc">
+            <label for="eDesc">Repair or maintenance done</label>
+            <input type="text" id="eDesc" maxlength="200" required placeholder="Oil and filter change">
+          </div>
+          <div class="field f-loc">
+            <label for="eLoc">Where it was done</label>
+            <input type="text" id="eLoc" list="locList" maxlength="120" placeholder="Home garage">
+            <datalist id="locList"></datalist>
+          </div>
+          <div class="field f-miles">
+            <label for="eMiles">Mileage</label>
+            <input type="number" id="eMiles" min="0" step="1" inputmode="numeric" placeholder="84210">
+          </div>
+          <div class="field f-cost">
+            <label for="eCost">Cost ($)</label>
+            <input type="number" id="eCost" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+          </div>
+        </div>
+        <div class="entry-foot">
+          <label class="check"><input type="checkbox" id="eOil"> This was an oil change (restarts the 6‑month reminder)</label>
+          <div class="entry-buttons">
+            <button type="button" class="btn btn-quiet" id="cancelEditBtn" hidden>Cancel</button>
+            <button type="submit" class="btn btn-primary" id="saveEntryBtn">Add to log</button>
+          </div>
+        </div>
+        <p class="form-error" id="entryError" role="alert" hidden></p>
+      </form>
+
+      <div class="filters" role="group" aria-label="Sort and filter the log">
+        <div class="field f-search">
+          <label for="fSearch">Search</label>
+          <input type="search" id="fSearch" placeholder="Brakes, tires, shop name">
+        </div>
+        <div class="field">
+          <label for="fLoc">Location</label>
+          <select id="fLoc"><option value="">All locations</option></select>
+        </div>
+        <div class="field">
+          <label for="fFrom">From</label>
+          <input type="date" id="fFrom">
+        </div>
+        <div class="field">
+          <label for="fTo">To</label>
+          <input type="date" id="fTo">
+        </div>
+        <div class="field">
+          <label for="fSort">Sort by</label>
+          <select id="fSort">
+            <option value="date:desc">Date, newest first</option>
+            <option value="date:asc">Date, oldest first</option>
+            <option value="cost:desc">Cost, highest first</option>
+            <option value="cost:asc">Cost, lowest first</option>
+            <option value="mileage:desc">Mileage, highest first</option>
+            <option value="mileage:asc">Mileage, lowest first</option>
+            <option value="description:asc">Work done, A to Z</option>
+            <option value="location:asc">Location, A to Z</option>
+          </select>
+        </div>
+        <label class="check f-oil"><input type="checkbox" id="fOil"> Oil changes only</label>
+        <button type="button" class="btn btn-quiet" id="clearFiltersBtn" hidden>Clear filters</button>
+      </div>
+
+      <p class="log-summary" id="logSummary" aria-live="polite"></p>
+
+      <div class="table-scroll">
+        <table class="log-table" id="logTable">
+          <thead>
+            <tr>
+              <th scope="col"><button type="button" data-sort="date">Date</button></th>
+              <th scope="col"><button type="button" data-sort="description">Work done</button></th>
+              <th scope="col"><button type="button" data-sort="location">Location</button></th>
+              <th scope="col" class="num"><button type="button" data-sort="mileage">Mileage</button></th>
+              <th scope="col" class="num"><button type="button" data-sort="cost">Cost</button></th>
+              <th scope="col" class="num">Running total</th>
+              <th scope="col"><span class="visually-hidden">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody id="logBody"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="logEmpty" hidden></p>
+    </section>
+
+    <!-- Parts stores -->
+    <section id="stores" class="block" aria-labelledby="storesTitle">
+      <div class="block-head">
+        <h2 id="storesTitle">Parts stores near you</h2>
+      </div>
+      <div class="stores-top">
+        <div class="field f-zip">
+          <label for="zipInput">ZIP code or city (optional)</label>
+          <input type="text" id="zipInput" maxlength="60" autocomplete="postal-code" placeholder="Leave blank to use your current location">
+        </div>
+        <a class="btn btn-primary" id="allStoresLink" target="_blank" rel="noopener">Show all parts stores on a map</a>
+      </div>
+      <ul class="store-list" id="storeList"></ul>
+    </section>
+
+    <!-- Backup -->
+    <section id="backup" class="block" aria-labelledby="backupTitle">
+      <div class="block-head">
+        <h2 id="backupTitle">Backup and restore</h2>
+      </div>
+      <div class="backup">
+        <p>Your records are stored in this browser on this device. Download a spreadsheet backup regularly, and use it to move your records to another device or browser.</p>
+        <div class="backup-actions">
+          <button type="button" class="btn btn-primary" id="backupBtn">Download backup (.xlsx)</button>
+          <button type="button" class="btn btn-outline" id="restoreBtn">Restore from backup</button>
+          <input type="file" id="restoreFile" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+        </div>
+        <p class="note">The backup has one sheet for your cars and one for the maintenance log, and opens in Excel, Numbers or Google Sheets. VIN photos are not included.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>AutoLog stores everything in your browser. Nothing is sent to a server.</p>
+      <p>Photo: <a href="https://commons.wikimedia.org/wiki/File:1969_Ford_Mustang_Mach_1_in_Red_and_Black_(53520101274).jpg" target="_blank" rel="noopener">1969 Ford Mustang Mach 1 in Red and Black</a> by crudmucosa, <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0</a>, resized.</p>
+    </div>
+  </footer>
+
+  <!-- Car form -->
+  <dialog id="carDialog" aria-labelledby="carDialogTitle">
+    <form id="carForm" novalidate>
+      <div class="dialog-head">
+        <h2 id="carDialogTitle">Add a car</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Close">×</button>
+      </div>
+      <div class="dialog-body" id="carFormBody"></div>
+      <p class="form-error" id="carError" role="alert" hidden></p>
+      <div class="dialog-foot">
+        <button type="button" class="btn btn-quiet" data-close>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="saveCarBtn">Save car</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Profiles -->
+  <dialog id="profileDialog" aria-labelledby="profileDialogTitle">
+    <div class="dialog-head">
+      <h2 id="profileDialogTitle">Profiles</h2>
+      <button type="button" class="icon-btn" data-close aria-label="Close" id="profileClose">×</button>
+    </div>
+    <div class="dialog-body">
+      <p id="profileIntro">Each person gets their own cars and log. Profiles are kept in this browser, so anyone using this device can open them.</p>
+      <ul class="profile-list" id="profileList"></ul>
+      <form id="profileForm" class="profile-form" novalidate>
+        <div class="field">
+          <label for="newProfileName">New profile name</label>
+          <input type="text" id="newProfileName" maxlength="40" autocomplete="given-name" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Create profile</button>
+      </form>
+      <p class="form-error" id="profileError" role="alert" hidden></p>
+    </div>
+  </dialog>
+
+  <!-- VIN photo viewer -->
+  <dialog id="photoDialog" aria-label="VIN photo">
+    <div class="dialog-head">
+      <h2>VIN photo</h2>
+      <button type="button" class="icon-btn" data-close aria-label="Close">×</button>
+    </div>
+    <div class="dialog-body"><img id="photoFull" alt="Photo of the car's VIN plate"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
