@@ -646,6 +646,18 @@
     showVinHint();
     $('carError').hidden = true;
     $('carDialog').showModal();
+    carSnapshot = carFormState();
+  }
+
+  /* Unsaved-changes guard for the car form */
+  let carSnapshot = '';
+  const carFormState = () => JSON.stringify([CAR_FIELDS.map((f) => $('c_' + f.key).value.trim()), pendingVinPhoto || '']);
+
+  function requestCloseCarDialog() {
+    if (carFormState() === carSnapshot) { $('carDialog').close(); return; }
+    const d = $('unsavedDialog');
+    if (!d.open) d.showModal();
+    $('unsavedNo').focus();
   }
 
   function submitCar(ev) {
@@ -914,10 +926,15 @@
     // A profile is required before anything can be saved
     $('profileDialog').addEventListener('cancel', (e) => { if (!db.users.length) e.preventDefault(); });
 
-    document.querySelectorAll('dialog [data-close]').forEach((b) => b.addEventListener('click', () => b.closest('dialog').close()));
+    // Closing the car form goes through the unsaved-changes check
+    const closeDialog = (d) => (d.id === 'carDialog' ? requestCloseCarDialog() : d.close());
+    document.querySelectorAll('dialog [data-close]').forEach((b) => b.addEventListener('click', () => closeDialog(b.closest('dialog'))));
     document.querySelectorAll('dialog').forEach((d) => d.addEventListener('click', (e) => {
-      if (e.target === d && !(d.id === 'profileDialog' && !db.users.length)) d.close();
+      if (e.target === d && !(d.id === 'profileDialog' && !db.users.length)) closeDialog(d);
     }));
+    $('carDialog').addEventListener('cancel', (e) => { e.preventDefault(); requestCloseCarDialog(); }); // Escape key
+    $('unsavedYes').addEventListener('click', () => { $('unsavedDialog').close(); $('carDialog').close(); });
+    $('unsavedNo').addEventListener('click', () => $('unsavedDialog').close());
 
     $('entryForm').addEventListener('submit', submitEntry);
     $('cancelEditBtn').addEventListener('click', resetEntryForm);

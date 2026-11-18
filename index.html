@@ -234,6 +234,20 @@
     </form>
   </dialog>
 
+  <!-- Unsaved changes check for the car form -->
+  <dialog id="unsavedDialog" class="confirm-dialog" role="alertdialog" aria-labelledby="unsavedTitle" aria-describedby="unsavedMsg">
+    <div class="dialog-head">
+      <h2 id="unsavedTitle">Unsaved changes</h2>
+    </div>
+    <div class="dialog-body">
+      <p id="unsavedMsg">You have unsaved changes, do you want to exit without saving?</p>
+    </div>
+    <div class="dialog-foot">
+      <button type="button" class="btn btn-outline" id="unsavedYes">Yes</button>
+      <button type="button" class="btn btn-primary" id="unsavedNo">No</button>
+    </div>
+  </dialog>
+
   <!-- Profiles -->
   <dialog id="profileDialog" aria-labelledby="profileDialogTitle">
     <div class="dialog-head">

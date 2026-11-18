@@ -261,6 +261,9 @@ dialog[open] { display: flex; flex-direction: column; }
 dialog > form { display: flex; flex-direction: column; min-height: 0; }
 dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
 #profileDialog { width: min(520px, calc(100vw - 24px)); }
+.confirm-dialog { width: min(440px, calc(100vw - 24px)); }
+.confirm-dialog .dialog-head { padding-block: 12px; }
+.confirm-dialog .dialog-foot .btn { min-width: 6rem; }
 .dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 20px; background: var(--ink); color: #fff; border-bottom: 3px solid var(--gold); }
 .dialog-head h2 { font-style: italic; font-weight: 700; font-size: 1.75rem; }
 .dialog-body { padding: 20px; overflow-y: auto; }
